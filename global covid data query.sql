@@ -4,6 +4,7 @@ from PortfolioProject..['Covid Deaths - Copy$']
 where continent is not null
 order by 3,4
 
+--Table 2 Global Covid Vaccination
 --select*
 --from PortfolioProject..['Covid Vaccinations - Copy$']
 --order by 3,4

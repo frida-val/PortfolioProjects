@@ -1,4 +1,4 @@
---Table 1 Covid Deaths
+--Table 1 Global Covid Deaths
 select*
 from PortfolioProject..['Covid Deaths - Copy$']
 where continent is not null
@@ -8,7 +8,7 @@ order by 3,4
 --from PortfolioProject..['Covid Vaccinations - Copy$']
 --order by 3,4
 
---select Data that I will be using
+--Selecting the Data that I will be analysing from table 1  
 
 select location, date, total_cases, new_cases, total_deaths, population 
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -16,7 +16,7 @@ where continent is not null
 order by 1,2
 
 --total cases vs total deaths
---shows the likelihood of covid deaths in Africa
+--shows the likelihood of covid deaths in Africa continent
 
 select location, date, total_cases, total_deaths,(total_deaths/total_cases)*100 as DeathPercentage
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -25,7 +25,7 @@ order by 1,2
 
 
 --looking at total cases vs the population
--- shows what percent of the population for Covid
+-- shows what percent of the population got Covid
 
 select location, date, population, total_cases,(total_cases/population)*100 as CasesPercentage
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -33,7 +33,7 @@ from PortfolioProject..['Covid Deaths - Copy$']
 --where location like '%Africa%'
 order by 1,2
 
---what country has highest infection rate relative to the population
+--which country in Africa has the highest infection rate vs the population
 
 select location, population, max(total_cases) as highestinfectioncount,max(total_cases/population)*100 as highestPercentage
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -42,7 +42,7 @@ where continent = 'Africa'
 group by location,population 
 order by highestPercentage desc
 
---shows countries with the highest deathcount per population
+--shows countries with the highest deathcount
 
 select location, max(cast(total_deaths as int)) as TotaldeathCount
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -63,7 +63,7 @@ order by TotaldeathCount desc
 
 
 --Break things down by Continent
-
+--convert total_deaths into an integer by casting
 
 select continent, max(cast(total_deaths as int)) as TotaldeathCount
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -73,15 +73,17 @@ group by continent
 order by TotaldeathCount desc
 
 --showing the continent with the highest death counts
+--convert total_deaths into int
 
 select continent, max(cast(total_deaths as int)) as TotaldeathCount
 from PortfolioProject..['Covid Deaths - Copy$']
 --where continent = 'Africa' 
 where continent is not null
 group by continent
-order by TotaldeathCount desc
+order by TotaldeathCount asc
 
-breaking global numbers
+--breaking global numbers
+--finding the percentage of new_deaths
 
 select date, sum (new_cases) as Totalnewcases,sum (cast(new_deaths as int))as Totalnewdeaths, sum(cast(new_deaths as int))/sum(new_cases)*100 as Deathpercentage
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -92,7 +94,7 @@ order by 1,2
 
 --Table2 Covid Vaccinations
 --Looking at total population vs vaccination
--- convert data type of new_vaccinations or cast
+-- convert data type of new_vaccinations or use cast
 
 select deaths.continent, deaths.location,deaths.date,deaths.population,vaccine.new_vaccinations,
 sum(convert(bigint,vaccine.new_vaccinations))

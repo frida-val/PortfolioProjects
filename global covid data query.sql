@@ -1,3 +1,8 @@
+/*
+Queries used for Tablaeu Project
+*/
+
+
 --Table 1 Global Covid Deaths
 select*
 from PortfolioProject..['Covid Deaths - Copy$']
@@ -36,12 +41,22 @@ order by 1,2
 
 --which country in Africa has the highest infection rate vs the population
 
-select location, population, max(total_cases) as highestinfectioncount,max(total_cases/population)*100 as highestPercentage
+
+--Visualization 1
+select location, population, max(total_cases) as highestinfectioncount,max(total_cases/population)*100 as PercentagePopulationInfected
 from PortfolioProject..['Covid Deaths - Copy$']
 where continent = 'Africa'
 --where location like '%Africa%'
 group by location,population 
-order by highestPercentage desc
+order by PercentagePopulationInfected desc
+
+--Visualization 2
+select location, population, date, max(total_cases) as highestinfectioncount,max(total_cases/population)*100 as PercentagePopulationInfected
+from PortfolioProject..['Covid Deaths - Copy$']
+--where continent = 'Africa'
+--where location like '%Africa%'
+group by location,population,date 
+order by PercentagePopulationInfected desc
 
 --shows countries with the highest deathcount
 
@@ -86,17 +101,39 @@ order by TotaldeathCount asc
 --breaking global numbers
 --finding the percentage of new_deaths
 
-select date, sum (new_cases) as Totalnewcases,sum (cast(new_deaths as int))as Totalnewdeaths, sum(cast(new_deaths as int))/sum(new_cases)*100 as Deathpercentage
+--Visualization 3
+select date, sum (new_cases) as Totalnewcases,sum (cast(new_deaths as int))as Totalnewdeaths, 
+sum(cast(new_deaths as int))/sum(new_cases)*100 as Deathpercentage
 from PortfolioProject..['Covid Deaths - Copy$']
 --where continent = 'Africa'
 where continent is not null
-group by date
+group by date 
+order by 1,2
+
+--Visualization 4
+select location, sum(cast(new_deaths as int)) as TotalDeathCount
+from PortfolioProject..['Covid Deaths - Copy$']
+--where location = 'Africa'
+where continent is null
+and location not in ('World', 'European Union', 'International','High income', 'Upper middle income','lower middle income', 'low income')
+group by location 
+order by TotalDeathCount desc
+
+
+--Visualization 5
+select sum (new_cases) as Totalnewcases,sum (cast(new_deaths as int))as Totalnewdeaths, 
+sum(cast(new_deaths as int))/sum(new_cases)*100 as Deathpercentage
+from PortfolioProject..['Covid Deaths - Copy$']
+--where continent = 'Africa'
+where continent is not null
+--group by date 
 order by 1,2
 
 --Table2 Covid Vaccinations
 --Looking at total population vs vaccination
 -- convert data type of new_vaccinations or use cast
 
+--Visualization 6
 select deaths.continent, deaths.location,deaths.date,deaths.population,vaccine.new_vaccinations,
 sum(convert(bigint,vaccine.new_vaccinations))
 over (partition by deaths.location order by deaths.location, deaths.date) as RollingPeopleVaccinated
